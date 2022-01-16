@@ -10,12 +10,38 @@ class CreateArtworkSerializer(serializers.ModelSerializer):
 
 
 class ReadArtworkSerializer(serializers.ModelSerializer):
+    author = serializers.CharField(source='id_author')
+    category = serializers.CharField(source='id_category')
+
     class Meta:
         model = Artworks
-        fields = '__all__'
+        fields = (
+            'id',
+            'artwork',
+            'name',
+            'description',
+            'status',
+            'date_create',
+            'date_update',
+            'author',
+            'category',
+        )
 
 
 class ListArtworkSerializer(serializers.ModelSerializer):
+    author = serializers.CharField(source='id_author')
+    category = serializers.CharField(source='id_category')
+
     class Meta:
         model = Artworks
-        fields = '__all__'
+        fields = (
+            'id',
+            'artwork',
+            'name',
+            'description',
+            'status',
+            'date_create',
+            'date_update',
+            'author',
+            'category',
+        )

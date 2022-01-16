@@ -1,5 +1,6 @@
 import datetime
 
+from django.http import JsonResponse
 from django.shortcuts import render
 from rest_framework import generics, permissions
 from rest_framework.permissions import BasePermission
@@ -50,6 +51,7 @@ class UpdateDestroyView(generics.RetrieveUpdateDestroyAPIView):
     permission_classes = [IsObjectOwner, permissions.IsAuthenticated, ]
     serializer_class = ReadArtworkSerializer
     queryset = Artworks.objects.exclude(status='Del').all()
+    editable_fields_lst = ['name', 'description']
 
     def get_object(self):
         queryset = self.filter_queryset(self.get_queryset())
@@ -59,6 +61,13 @@ class UpdateDestroyView(generics.RetrieveUpdateDestroyAPIView):
             obj = None
         finally:
             return obj
+
+    def patch(self, request, *args, **kwargs):
+        if all(item in self.editable_fields_lst for item in request.data):
+            return super().patch(request, *args, **kwargs)
+        else:
+            return JsonResponse(
+                    {'Ошибка': 'Редактирование полей не разрешено'}, status=401)
 
     def perform_destroy(self, instance):
         instance.status = 'Del'
